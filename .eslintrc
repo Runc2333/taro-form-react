@@ -1,0 +1,233 @@
+{
+  "extends": [
+    "taro/react",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "simple-import-sort"
+  ],
+  "rules": {
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "no-unused-vars": "off",
+    "no-unexpected-multiline": "error",
+    "space-before-function-paren": [
+      "error",
+      "always"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "quotes": [
+      "warn",
+      "double"
+    ],
+    "comma-dangle": [
+      "warn",
+      "always-multiline"
+    ],
+    "eol-last": [
+      "warn",
+      "never"
+    ],
+    "prefer-const": [
+      "warn",
+      {
+        "destructuring": "any",
+        "ignoreReadBeforeAssign": false
+      }
+    ],
+    "prefer-template": "error",
+    "no-var": "error",
+    "import/no-commonjs": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "import/first": "off",
+    "jsx-quotes": [
+      "warn",
+      "prefer-double"
+    ],
+    "react/self-closing-comp": [
+      "warn",
+      {
+        "component": true,
+        "html": true
+      }
+    ],
+    "react-hooks/rules-of-hooks": "warn",
+    "react-hooks/exhaustive-deps": "warn",
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "varsIgnorePattern": "^_|^Nerv|^React|^Taro",
+        "argsIgnorePattern": "^_|^Nerv|^React|^Taro"
+      }
+    ],
+    "@typescript-eslint/semi": [
+      "warn",
+      "always"
+    ],
+    "@typescript-eslint/no-shadow": "off",
+    "quote-props": [
+      "warn",
+      "consistent-as-needed"
+    ],
+    "array-element-newline": [
+      "warn",
+      "consistent"
+    ],
+    "arrow-parens": [
+      "warn",
+      "as-needed"
+    ],
+    "react/no-children-prop": "off",
+    "@typescript-eslint/no-this-alias": "off",
+    "@typescript-eslint/object-curly-spacing": [
+      "warn",
+      "always"
+    ],
+    "no-shadow": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": true,
+        "optionalDependencies": false,
+        "peerDependencies": true
+      }
+    ],
+    "react/jsx-indent": [
+      "warn",
+      2,
+      {
+        "indentLogicalExpressions": true
+      }
+    ],
+    "indent": [
+      "warn",
+      2,
+      {
+        "SwitchCase": 1,
+        "ignoredNodes": [
+          "JSXElement *",
+          "JSXElement"
+        ],
+        "FunctionDeclaration": {
+          "parameters": 1,
+          "body": 1
+        },
+        "FunctionExpression": {
+          "parameters": 1,
+          "body": 1
+        }
+      }
+    ],
+    "comma-spacing": [
+      "warn",
+      {
+        "before": false,
+        "after": true
+      }
+    ],
+    "simple-import-sort/imports": [
+      "warn",
+      {
+        "groups": [
+          // React 相关依赖
+          [
+            "^react$",
+            "^react-dom$"
+          ],
+          [
+            // Taro 相关依赖
+            "^@tarojs/taro",
+            "^@tarojs",
+            // @开头的 node_modules
+            "^@\\w",
+            // 其他 node_modules
+            "^[^.]"
+          ],
+          // 项目内的组件（路径包含 'components'）
+          [
+            "^@/components/",
+            "^.+/components/",
+            "^components/"
+          ],
+          // store 相关文件（路径包含 'store' 或导入的模块名以 'store' 结尾）
+          [
+            "^@/store/*",
+            "^.+/store/",
+            "^store/"
+          ],
+          // 项目内的 hooks（路径包含 'hooks' 或导入的模块名以 'use' 开头）
+          [
+            "^@/hooks/.*",
+            "^.+/hooks/.*",
+            "^hooks/.*",
+            "^.*(use[A-Z].*)"
+          ],
+          // 项目内的常量（路径包含 'constants'）
+          [
+            "^@/constants/",
+            "^.+/constants/",
+            "^constants/"
+          ],
+          // 项目内的库函数（路径包含 'libs'）
+          [
+            "^@/libs/",
+            "^.+/libs/",
+            "^libs/"
+          ],
+          // 项目内的工具函数（路径包含 'utils'）
+          [
+            "^@/utils/",
+            "^.+/utils/",
+            "^utils/"
+          ],
+          // 项目内的网络请求文件（路径包含 'services'）
+          [
+            "^@/services/*",
+            "^.+/services/",
+            "^services/"
+          ],
+          // 移植的文件（路径包含 'ported-files'）
+          [
+            "^@/ported-files/",
+            "^.+/ported-files/",
+            "^ported-files/"
+          ],
+          // 其他直接导入的文件
+          [
+            "^@/"
+          ],
+          // 类型导入（import type）
+          [
+            "^.*\\u0000$"
+          ],
+          // 样式表导入
+          [
+            "^.+\\.?(css|scss|less)$"
+          ],
+          // 静态资源导入
+          [
+            "^.+\\.?(png|jpg|jpeg|gif|svg|bmp|webp|txt|pdf)$"
+          ],
+          // 副作用导入（import 'module-name'）
+          [
+            "^\\u0000.*"
+          ],
+          // 其他相对路径导入
+          [
+            "^\\."
+          ]
+        ]
+      }
+    ]
+  },
+  "globals": {
+    "wx": "readonly"
+  }
+}
