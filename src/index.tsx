@@ -64,6 +64,7 @@ const InnerForm = forwardRef<FormActions, FormProps>(({
     setFieldValue: context.setFieldValue,
     getFieldValue: context.getFieldValue,
     getFieldsValue: context.getFieldsValue,
+    getFieldsFormattedValue: context.getFieldsFormattedValue,
     setFields: context.setFields,
     getFields: context.getFields,
     resetFields: context.resetFields,
@@ -71,7 +72,7 @@ const InnerForm = forwardRef<FormActions, FormProps>(({
     getFieldError: context.getFieldError,
     validateFields: context.validateFields,
     isFieldsTouched: context.isFieldsTouched,
-  }), [context.getFieldError, context.getFieldValue, context.getFields, context.getFieldsValue, context.isFieldsTouched, context.resetFields, context.setFieldError, context.setFieldValue, context.setFields, context.validateFields, handleSubmit]);
+  }), [context.getFieldError, context.getFieldValue, context.getFields, context.getFieldsFormattedValue, context.getFieldsValue, context.isFieldsTouched, context.resetFields, context.setFieldError, context.setFieldValue, context.setFields, context.validateFields, handleSubmit]);
 
   return children;
 });
