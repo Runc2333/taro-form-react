@@ -21,6 +21,7 @@ export default function useFormConfiguration ({
     passthroughErrors: contextPassthroughErrors = false,
     showErrors: contextShowErrors = true,
     transformBehavior: contextTransformBehavior = "replace",
+    updateTickLimit: contextUpdateTickLimit = 50,
     getRequiredMessage: contextGetRequiredMessage = label => `${label}不能为空`,
   } = useFormContext();
 
@@ -32,6 +33,7 @@ export default function useFormConfiguration ({
     passthroughErrors: fallback(passthroughErrors, contextPassthroughErrors),
     showErrors: fallback(showErrors, contextShowErrors),
     transformBehavior: contextTransformBehavior,
+    updateTickLimit: contextUpdateTickLimit,
     getRequiredMessage: fallback(getRequiredMessage, contextGetRequiredMessage),
   };
 }

@@ -46,6 +46,11 @@ export type FormContextProps = {
   // merge 会将 transform 返回的对象 merge 到整个表单的 data 中
   // replace 会直接使用 transform 返回的值填充到对应的 field 中
   transformBehavior?: "merge" | "replace";
+  // 限制 onChange 的触发频率
+  // throttle(updateTickLimit: number) ms 内只会触发一次 onChange
+  // 默认为 50
+  // 过小的值可能导致数据异常
+  updateTickLimit?: number;
   getRequiredMessage?: (label: string) => string;
 
   data: Record<string, any>;
@@ -92,7 +97,7 @@ export const useFormContext = () => {
   return context;
 };
 
-export type FormProviderConfiguration = Pick<FormContextProps, "colon" | "labelProps" | "layout" | "validateFirst" | "showErrors" | "passthroughErrors" | "transformBehavior" | "getRequiredMessage">;
+export type FormProviderConfiguration = Pick<FormContextProps, "colon" | "labelProps" | "layout" | "validateFirst" | "showErrors" | "passthroughErrors" | "transformBehavior" | "updateTickLimit" | "getRequiredMessage">;
 
 export type FormProviderProps =
   & FormProviderConfiguration

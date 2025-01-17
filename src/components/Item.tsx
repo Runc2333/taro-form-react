@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { View } from "@tarojs/components";
+import { useThrottleFn } from "ahooks";
 import classNames from "classnames";
 import { isNull } from "lodash-es";
 
@@ -82,6 +83,7 @@ const FormItem: React.FC<FormItemProps> = ({
     showErrors,
     passthroughErrors,
     transformBehavior,
+    updateTickLimit,
     getRequiredMessage,
   } = useFormConfiguration(props);
 
@@ -131,12 +133,19 @@ const FormItem: React.FC<FormItemProps> = ({
 
   const validateTrigger = useMemo(() => pValidateTrigger ?? [trigger], [pValidateTrigger, trigger]);
 
-  const handleChange = useCallback((...args: any[]) => {
+  const _handleChange = useCallback((...args: any[]) => {
     const newValue = getValueFromEvent(...args);
     onChange(newValue);
     validateTrigger.includes(trigger) && handleValidate({ value: newValue });
     children?.props?.[trigger]?.(...args);
   }, [children?.props, getValueFromEvent, handleValidate, onChange, trigger, validateTrigger]);
+
+  const {
+    run: handleChange,
+  } = useThrottleFn(_handleChange, {
+    wait: updateTickLimit,
+    trailing: true,
+  });
 
   const withValidate = (fn?: (...args: any[]) => void) => {
     return (...args: any[]) => {
