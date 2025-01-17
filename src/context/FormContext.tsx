@@ -116,11 +116,9 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
   const registerField = useCallback<FormContextProps["registerField"]>((name, ref, initialValue) => {
     const nameString = namePathToString(name);
     const value = initialValue ?? get(initialValues, name);
-    setData(data => {
-      const nextData = cloneDeep(data);
-      set(nextData, name, value);
-      return nextData;
-    });
+    const targetData = cloneDeep(data);
+    set(targetData, name, value);
+    setData(targetData);
 
     const field = getField(nameString);
     if (field) {
@@ -152,14 +150,12 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
   const unregisterField = useCallback<FormContextProps["unregisterField"]>((name, ref) => {
     const nameString = namePathToString(name);
     const field = getField(nameString);
+    const targetData = cloneDeep(data);
     if (field) {
       if (field.count === 1) {
         removeField(nameString);
-        setData(data => {
-          const nextData = cloneDeep(data);
-          unset(nextData, name);
-          return nextData;
-        });
+        unset(targetData, name);
+        setData(targetData);
         onFieldsChange?.(
           [{ name, value: get(data, name) }],
           Array.from(fields.values()).map(field => ({ name: field.name, value: get(data, field.name) })).filter(f => f.name !== name),
@@ -184,20 +180,17 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
       return;
     }
 
-    setData(data => {
-      const nextData = cloneDeep(data);
-      set(nextData, name, value);
-      return nextData;
-    });
+    const targetData = cloneDeep(data);
+    set(targetData, name, value);
+
+    setData(targetData);
 
     setField(nameString, { ...field, touched: true });
 
     if (onValuesChange) {
       const changes = {};
       set(changes, name, value);
-      const all = cloneDeep(data);
-      set(all, name, value);
-      onValuesChange(changes, all);
+      onValuesChange(changes, targetData);
     }
   }, [data, getField, onValuesChange, setField]);
 
@@ -254,6 +247,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
 
   const setFields = useCallback<FormContextProps["setFields"]>(fields => {
     const changes = {};
+    const targetData = cloneDeep(data);
     for (const fieldData of fields) {
       const nameString = namePathToString(fieldData.name);
       const field = getField(namePathToString(fieldData.name));
@@ -266,14 +260,11 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
         setField(nameString, { ...field, touched: fieldData.touched });
       }
 
-      setData(data => {
-        const nextData = cloneDeep(data);
-        set(nextData, fieldData.name, fieldData.value);
-        set(changes, fieldData.name, fieldData.value);
-        return nextData;
-      });
+      set(targetData, fieldData.name, fieldData.value);
+      set(changes, fieldData.name, fieldData.value);
     }
-    onValuesChange?.(changes, merge(cloneDeep(data), changes));
+    setData(targetData);
+    onValuesChange?.(changes, targetData);
   }, [data, getField, onValuesChange, setField]);
 
   const getFields = useCallback<FormContextProps["getFields"]>(nameList => {
@@ -312,16 +303,15 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
         .filter(v => v !== undefined)
       ?? Array.from(fields.values());
 
-    for (const field of fieldsToReset) {
-      setData(data => {
-        const nextData = cloneDeep(data);
-        set(nextData, field.name, field.initialValue ?? get(initialValues, field.name));
-        return nextData;
-      });
+    const targetData = cloneDeep(data);
 
+    for (const field of fieldsToReset) {
+      set(targetData, field.name, field.initialValue ?? get(initialValues, field.name));
       setField(namePathToString(field.name), { ...field, touched: false });
     }
-  }, [fields, getField, initialValues, setField]);
+
+    setData(targetData);
+  }, [data, fields, getField, initialValues, setField]);
 
   const setFieldError = useCallback<FormContextProps["setFieldError"]>((name, errors) => {
     const nameString = namePathToString(name);
