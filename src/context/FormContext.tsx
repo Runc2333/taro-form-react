@@ -1,9 +1,8 @@
-import React, { createContext, useCallback, useContext } from "react";
+import React, { createContext, useCallback, useContext, useState } from "react";
 
 import { cloneDeep, get, merge, set, unset } from "lodash-es";
 
-import useImmediateState from "@/hooks/useImmediateState";
-import useMap from "@/hooks/useMap";
+import useMap from "../hooks/useMap";
 
 import type { FormLabelProps } from "../components/Label";
 import type { NamePath } from "../types";
@@ -112,14 +111,16 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
   ...props
 }) => {
   const [fields, { set: setField, get: getField, remove: removeField }] = useMap<string, Field>();
-  const [data, setData] = useImmediateState<Record<string, any>>({});
+  const [data, setData] = useState<Record<string, any>>({});
 
   const registerField = useCallback<FormContextProps["registerField"]>((name, ref, initialValue) => {
     const nameString = namePathToString(name);
     const value = initialValue ?? get(initialValues, name);
-    const targetData = cloneDeep(data);
-    set(targetData, name, value);
-    setData(targetData);
+    setData(data => {
+      const nextData = cloneDeep(data);
+      set(nextData, name, value);
+      return nextData;
+    });
 
     const field = getField(nameString);
     if (field) {
@@ -146,17 +147,19 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
       [{ name, value }],
       Array.from(fields.values()).map(field => ({ name: field.name, value: get(data, field.name) })).concat([{ name, value }]),
     );
-  }, [data, fields, getField, initialValues, onFieldsChange, setData, setField]);
+  }, [data, fields, getField, initialValues, onFieldsChange, setField]);
 
   const unregisterField = useCallback<FormContextProps["unregisterField"]>((name, ref) => {
     const nameString = namePathToString(name);
     const field = getField(nameString);
-    const targetData = cloneDeep(data);
     if (field) {
       if (field.count === 1) {
         removeField(nameString);
-        unset(targetData, name);
-        setData(targetData);
+        setData(data => {
+          const nextData = cloneDeep(data);
+          unset(nextData, name);
+          return nextData;
+        });
         onFieldsChange?.(
           [{ name, value: get(data, name) }],
           Array.from(fields.values()).map(field => ({ name: field.name, value: get(data, field.name) })).filter(f => f.name !== name),
@@ -171,7 +174,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
     } else {
       console.warn(`Attempted to unregister field "${nameString}" that was never registered.`);
     }
-  }, [data, fields, getField, onFieldsChange, removeField, setData, setField]);
+  }, [data, fields, getField, onFieldsChange, removeField, setField]);
 
   const setFieldValue = useCallback<FormContextProps["setFieldValue"]>((name, value) => {
     const nameString = namePathToString(name);
@@ -181,19 +184,22 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
       return;
     }
 
-    const targetData = cloneDeep(data);
-    set(targetData, name, value);
-
-    setData(targetData);
+    setData(data => {
+      const nextData = cloneDeep(data);
+      set(nextData, name, value);
+      return nextData;
+    });
 
     setField(nameString, { ...field, touched: true });
 
     if (onValuesChange) {
       const changes = {};
       set(changes, name, value);
-      onValuesChange(changes, targetData);
+      const all = cloneDeep(data);
+      set(all, name, value);
+      onValuesChange(changes, all);
     }
-  }, [data, getField, onValuesChange, setData, setField]);
+  }, [data, getField, onValuesChange, setField]);
 
   const getFieldValue = useCallback<FormContextProps["getFieldValue"]>(name => {
     return get(data, name);
@@ -247,26 +253,31 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
   }, [data, fields, getField]);
 
   const setFields = useCallback<FormContextProps["setFields"]>(fields => {
-    const changes = {};
-    const targetData = cloneDeep(data);
-    for (const fieldData of fields) {
-      const nameString = namePathToString(fieldData.name);
-      const field = getField(namePathToString(fieldData.name));
-      if (!field) {
-        console.warn(`Attempted to set field "${nameString}" that was never registered.`);
-        continue;
-      }
+    setData(data => {
+      const changes = {};
+      const nextData = cloneDeep(data);
+      for (const fieldData of fields) {
+        const nameString = namePathToString(fieldData.name);
+        const field = getField(namePathToString(fieldData.name));
+        if (!field) {
+          console.warn(`Attempted to set field "${nameString}" that was never registered.`);
+          continue;
+        }
 
-      if (fieldData.touched !== undefined) {
-        setField(nameString, { ...field, touched: fieldData.touched });
-      }
+        if (fieldData.touched !== undefined) {
+          setField(nameString, { ...field, touched: fieldData.touched });
+        }
 
-      set(targetData, fieldData.name, fieldData.value);
-      set(changes, fieldData.name, fieldData.value);
-    }
-    setData(targetData);
-    onValuesChange?.(changes, targetData);
-  }, [data, getField, onValuesChange, setData, setField]);
+        set(nextData, fieldData.name, fieldData.value);
+        set(changes, fieldData.name, fieldData.value);
+
+      }
+      setTimeout(() => {
+        onValuesChange?.(changes, merge(cloneDeep(data), nextData));
+      }, 0);
+      return nextData;
+    });
+  }, [getField, onValuesChange, setField]);
 
   const getFields = useCallback<FormContextProps["getFields"]>(nameList => {
     if (!nameList) {
@@ -304,15 +315,16 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
         .filter(v => v !== undefined)
       ?? Array.from(fields.values());
 
-    const targetData = cloneDeep(data);
-
     for (const field of fieldsToReset) {
-      set(targetData, field.name, field.initialValue ?? get(initialValues, field.name));
+      setData(data => {
+        const nextData = cloneDeep(data);
+        set(nextData, field.name, field.initialValue ?? get(initialValues, field.name));
+        return nextData;
+      });
+
       setField(namePathToString(field.name), { ...field, touched: false });
     }
-
-    setData(targetData);
-  }, [data, fields, getField, initialValues, setData, setField]);
+  }, [fields, getField, initialValues, setField]);
 
   const setFieldError = useCallback<FormContextProps["setFieldError"]>((name, errors) => {
     const nameString = namePathToString(name);
