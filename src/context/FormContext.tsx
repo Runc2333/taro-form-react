@@ -1,7 +1,8 @@
-import React, { createContext, useCallback, useContext, useState } from "react";
+import React, { createContext, useCallback, useContext } from "react";
 
 import { cloneDeep, get, merge, set, unset } from "lodash-es";
 
+import useImmediateState from "@/hooks/useImmediateState";
 import useMap from "@/hooks/useMap";
 
 import type { FormLabelProps } from "../components/Label";
@@ -111,7 +112,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
   ...props
 }) => {
   const [fields, { set: setField, get: getField, remove: removeField }] = useMap<string, Field>();
-  const [data, setData] = useState<Record<string, any>>({});
+  const [data, setData] = useImmediateState<Record<string, any>>({});
 
   const registerField = useCallback<FormContextProps["registerField"]>((name, ref, initialValue) => {
     const nameString = namePathToString(name);
@@ -145,7 +146,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
       [{ name, value }],
       Array.from(fields.values()).map(field => ({ name: field.name, value: get(data, field.name) })).concat([{ name, value }]),
     );
-  }, [data, fields, getField, initialValues, onFieldsChange, setField]);
+  }, [data, fields, getField, initialValues, onFieldsChange, setData, setField]);
 
   const unregisterField = useCallback<FormContextProps["unregisterField"]>((name, ref) => {
     const nameString = namePathToString(name);
@@ -170,7 +171,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
     } else {
       console.warn(`Attempted to unregister field "${nameString}" that was never registered.`);
     }
-  }, [data, fields, getField, onFieldsChange, removeField, setField]);
+  }, [data, fields, getField, onFieldsChange, removeField, setData, setField]);
 
   const setFieldValue = useCallback<FormContextProps["setFieldValue"]>((name, value) => {
     const nameString = namePathToString(name);
@@ -192,7 +193,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
       set(changes, name, value);
       onValuesChange(changes, targetData);
     }
-  }, [data, getField, onValuesChange, setField]);
+  }, [data, getField, onValuesChange, setData, setField]);
 
   const getFieldValue = useCallback<FormContextProps["getFieldValue"]>(name => {
     return get(data, name);
@@ -265,7 +266,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
     }
     setData(targetData);
     onValuesChange?.(changes, targetData);
-  }, [data, getField, onValuesChange, setField]);
+  }, [data, getField, onValuesChange, setData, setField]);
 
   const getFields = useCallback<FormContextProps["getFields"]>(nameList => {
     if (!nameList) {
@@ -311,7 +312,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
     }
 
     setData(targetData);
-  }, [data, fields, getField, initialValues, setField]);
+  }, [data, fields, getField, initialValues, setData, setField]);
 
   const setFieldError = useCallback<FormContextProps["setFieldError"]>((name, errors) => {
     const nameString = namePathToString(name);

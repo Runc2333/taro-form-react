@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { View } from "@tarojs/components";
 import classNames from "classnames";
+import { isNull } from "lodash-es";
 
 import useFormConfiguration from "../hooks/useFormConfiguration";
 import useFormItem from "../hooks/useFormItem";
@@ -12,7 +13,6 @@ import type { FieldRefActions, FormProviderConfiguration } from "../context/Form
 import type { NamePath, Rule } from "../types";
 
 import FormLabel from "./Label";
-import { isNull } from "lodash-es";
 
 export type FormItemProps =
   & FormProviderConfiguration
