@@ -52,7 +52,7 @@ const InnerForm = forwardRef<FormActions, FormProps>(({
     try {
       onFinish?.(values);
     } catch (e) {
-      console.log(e);
+      console.log("[taro-form-react] onFinish method errored: ", e);
     }
 
     return values;
