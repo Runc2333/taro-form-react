@@ -11,6 +11,8 @@ export default function useFormConfiguration ({
   validateFirst,
   passthroughErrors,
   showErrors,
+  transformBehavior,
+  updateTickLimit,
   getRequiredMessage,
 }: Partial<FormProviderConfiguration> = {}) {
   const {
@@ -32,8 +34,8 @@ export default function useFormConfiguration ({
     validateFirst: fallback(validateFirst, contextValidateFirst),
     passthroughErrors: fallback(passthroughErrors, contextPassthroughErrors),
     showErrors: fallback(showErrors, contextShowErrors),
-    transformBehavior: contextTransformBehavior,
-    updateTickLimit: contextUpdateTickLimit,
+    transformBehavior: fallback(transformBehavior, contextTransformBehavior),
+    updateTickLimit: fallback(updateTickLimit, contextUpdateTickLimit),
     getRequiredMessage: fallback(getRequiredMessage, contextGetRequiredMessage),
   };
 }
