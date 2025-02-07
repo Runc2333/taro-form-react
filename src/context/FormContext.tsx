@@ -180,17 +180,13 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
         });
       }
     } else {
-      console.warn(`[taro-form-react] Attempted to unregister field "${nameString}" that was never registered.`);
+      console.warn(`[taro-form-react] Attempted to unregister field "${nameString}" that was never registered. Nothing will happen.`);
     }
   }, [data, fields, getField, onFieldsChange, removeField, setField]);
 
   const setFieldValue = useCallback<FormContextProps["setFieldValue"]>((name, value) => {
     const nameString = namePathToString(name);
     const field = getField(nameString);
-    if (!field) {
-      console.warn(`[taro-form-react] Attempted to set value for field "${nameString}" that was never registered.`);
-      return;
-    }
 
     setData(data => {
       const nextData = cloneDeep(data);
@@ -198,7 +194,11 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
       return nextData;
     });
 
-    setField(nameString, { ...field, touched: true });
+    if (field) {
+      setField(nameString, { ...field, touched: true });
+    } else {
+      console.warn(`[taro-form-react] Attempted to set value for field "${nameString}" that was never registered.\nForm data will still be updated but may not present while submit.\nUse Form.Keep to keep the field in sync with the form data.`);
+    }
 
     if (onValuesChange) {
       const changes = {};
@@ -232,14 +232,14 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
     for (const name of realNameList) {
       const field = getField(namePathToString(name));
       if (!field) {
-        console.warn(`[taro-form-react] Attempted to get formatted value for field "${namePathToString(name)}" that was never registered.`);
+        console.warn(`[taro-form-react] Attempted to get formatted value for field "${namePathToString(name)}" that was never registered. This field's value will not present in the result.`);
         continue;
       }
 
       if (
         field.refs.some(ref => !ref.current)
       ) {
-        console.warn(`[taro-form-react] Attempted to get formatted value for field "${namePathToString(name)}" that has no or missing ref.`);
+        console.warn(`[taro-form-react] Attempted to get formatted value for field "${namePathToString(name)}" that has no or missing ref. This may cause unexpected behavior.`);
         continue;
       }
 
@@ -268,7 +268,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
         const nameString = namePathToString(fieldData.name);
         const field = getField(namePathToString(fieldData.name));
         if (!field) {
-          console.warn(`[taro-form-react] Attempted to set field "${nameString}" that was never registered.`);
+          console.warn(`[taro-form-react] Attempted to set field "${nameString}" that was never registered. Changes will be ignored.`);
           continue;
         }
 
@@ -298,7 +298,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
     for (const name of nameList) {
       const field = getField(namePathToString(name));
       if (!field) {
-        console.warn(`[taro-form-react] Attempted to get field "${namePathToString(name)}" that was never registered.`);
+        console.warn(`[taro-form-react] Attempted to get field "${namePathToString(name)}" that was never registered. This field will not present in the result.`);
         continue;
       }
 
@@ -315,7 +315,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
           const nameString = namePathToString(name);
           const field = getField(nameString);
           if (!field) {
-            console.warn(`[taro-form-react] Attempted to reset field "${nameString}" that was never registered.`);
+            console.warn(`[taro-form-react] Attempted to reset field "${nameString}" that was never registered. This field will not be reset.`);
             return undefined;
           }
           return field;
@@ -338,7 +338,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
     const nameString = namePathToString(name);
     const field = getField(nameString);
     if (!field) {
-      console.warn(`[taro-form-react] Attempted to set errors for field "${nameString}" that was never registered.`);
+      console.warn(`[taro-form-react] Attempted to set errors for field "${nameString}" that was never registered. Nothing will happen.`);
       return;
     }
 
@@ -348,7 +348,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
   const getFieldError = useCallback<FormContextProps["getFieldError"]>(name => {
     const field = getField(namePathToString(name));
     if (!field) {
-      console.warn(`[taro-form-react] Attempted to get errors for field "${namePathToString(name)}" that was never registered.`);
+      console.warn(`[taro-form-react] Attempted to get errors for field "${namePathToString(name)}" that was never registered. Returning empty array.`);
       return [];
     }
     return field.errors;
@@ -361,7 +361,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
           const nameString = namePathToString(name);
           const field = getField(nameString);
           if (!field) {
-            console.warn(`[taro-form-react] Attempted to validate field "${nameString}" that was never registered.`);
+            console.warn(`[taro-form-react] Attempted to validate field "${nameString}" that was never registered. This field will not be validated.`);
             return undefined;
           }
           return field;
@@ -375,7 +375,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
       if (
         field.refs.some(ref => !ref.current)
       ) {
-        console.warn(`[taro-form-react] Attempted to validate field "${namePathToString(field.name)}" that has no or missing ref.`);
+        console.warn(`[taro-form-react] Attempted to validate field "${namePathToString(field.name)}" that has no or missing ref. This field will not be validated.`);
         continue;
       }
 
@@ -401,7 +401,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
           const nameString = namePathToString(name);
           const field = getField(nameString);
           if (!field) {
-            console.warn(`[taro-form-react] Attempted to check if field "${nameString}" is touched but it was never registered.`);
+            console.warn(`[taro-form-react] Attempted to check if field "${nameString}" is touched but it was never registered. This field will not be considered.`);
             return undefined;
           }
           return field;
