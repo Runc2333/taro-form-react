@@ -4,6 +4,7 @@ import FormItem from "./components/Item";
 import FormKeep from "./components/Keep";
 import FormLabel from "./components/Label";
 import FormProvider from "./components/Provider";
+import FormSync from "./components/Sync";
 
 import { filterUndefined } from "@/utils/tools";
 
@@ -82,6 +83,7 @@ interface FormComponent extends React.ForwardRefExoticComponent<FormProps & Reac
   Provider: typeof FormProvider;
   Label: typeof FormLabel;
   Keep: typeof FormKeep;
+  Sync: typeof FormSync;
 }
 
 const Form = forwardRef<FormActions, FormProps>((props, ref) => {
@@ -96,5 +98,6 @@ Form.Item = FormItem;
 Form.Provider = FormProvider;
 Form.Label = FormLabel;
 Form.Keep = FormKeep;
+Form.Sync = FormSync;
 
 export default Form;
