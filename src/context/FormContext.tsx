@@ -120,7 +120,10 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
 
   const registerField = useCallback<FormContextProps["registerField"]>((name, ref, initialValue) => {
     const nameString = namePathToString(name);
-    const value = initialValue ?? get(initialValues, name);
+    const currentValue = get(data, name);
+    const value = currentValue
+      ? currentValue
+      : initialValue ?? get(initialValues, name);
     setData(data => {
       const nextData = cloneDeep(data);
       set(nextData, name, value);
