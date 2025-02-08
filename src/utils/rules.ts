@@ -19,18 +19,24 @@ export const validateRules = async (value: any, rules: Rule[], validateFirst: bo
         break;
       case "max" in rule:
         if (!isEmpty(value) && value.length > (rule.max ?? Infinity)) {
-          return rule.message;
+          if (typeof value === "number" && value > (rule.max ?? Infinity)) {
+            return rule.message;
+          } else if ((value?.length ?? 0) > (rule.max ?? Infinity)) {
+            return rule.message;
+          }
         }
         break;
       case "min" in rule:
-        if (!isEmpty(value) && value.length < (rule.min ?? -Infinity)) {
-          return rule.message;
+        if (!isEmpty(value)) {
+          if (typeof value === "number" && value < (rule.min ?? -Infinity)) {
+            return rule.message;
+          } else if ((value?.length ?? 0) < (rule.min ?? -Infinity)) {
+            return rule.message;
+          }
         }
         break;
       case "validator" in rule:
-        if (!isEmpty(value)) {
-          return await rule.validator(value);
-        }
+        return await rule.validator(value);
     }
   };
 
