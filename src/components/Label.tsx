@@ -29,8 +29,8 @@ const Label = ({
       : "tfr-normal tfr-hide-asterisk";
   const asteriskShowClassName =
     size === "small"
-      ? "tfr-small show-asterisk"
-      : "tfr-normal show-asterisk";
+      ? "tfr-small tfr-show-asterisk"
+      : "tfr-normal tfr-show-asterisk";
 
   return (
     <Text
