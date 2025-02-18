@@ -35,7 +35,7 @@ const Label = ({
   return (
     <Text
       className={classNames(
-        "tfr-form-label",
+        "tfr-form-label-label",
         required ? asteriskShowClassName : asteriskHideClassName,
         labelClassName,
       )}
