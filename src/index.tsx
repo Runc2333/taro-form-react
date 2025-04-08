@@ -101,3 +101,4 @@ Form.Keep = FormKeep;
 Form.Sync = FormSync;
 
 export default Form;
+export { useFormContext };

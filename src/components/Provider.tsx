@@ -1,13 +1,18 @@
 import React from "react";
 
+import { omit } from "lodash-es";
+
 import { useFormContext } from "../context/FormContext";
 
 export type FormProviderProps = {
-  children: (context: ReturnType<typeof useFormContext>) => React.ReactNode;
+  children: (context: Omit<ReturnType<typeof useFormContext>, "registerField" | "unregisterField" | "setFieldValue" | "setFields" | "resetFields" | "setFieldError" | "setData">) => React.ReactNode;
 };
 
 const FormProvider: React.FC<FormProviderProps> = ({ children }) => {
-  const context = useFormContext();
+  const context = omit(
+    useFormContext(),
+    ["registerField", "unregisterField", "setFieldValue", "setFields", "resetFields", "setFieldError", "setData"],
+  );
 
   return <>{children(context)}</>;
 };
