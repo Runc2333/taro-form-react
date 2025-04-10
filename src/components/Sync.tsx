@@ -1,4 +1,4 @@
-import { useEffect,useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { get } from "lodash-es";
 
@@ -10,7 +10,7 @@ import type { NamePath } from "@/types";
 export type FormSyncProps =
   | {
     source: NamePath;
-    target: NamePath;
+    target: NamePath[];
   }
   | {
     fields: NamePath[];
@@ -27,7 +27,9 @@ const FormSync: React.FC<FormSyncProps> = props => {
       }
     } else {
       result.set(namePathToString(props.source), props.source);
-      result.set(namePathToString(props.target), props.target);
+      for (const targetField of props.target) {
+        result.set(namePathToString(targetField), targetField);
+      }
     }
     return Array.from(result.values());
   }, [props]);
@@ -39,7 +41,9 @@ const FormSync: React.FC<FormSyncProps> = props => {
       const name = namePathToString(props.source);
       const value = get(data, props.source);
       if (memorizedValues.current.get(name) !== value) {
-        setFieldValue(props.target, value);
+        for (const targetField of props.target) {
+          setFieldValue(targetField, value);
+        }
       }
       memorizedValues.current.set(name, value);
     } else {
