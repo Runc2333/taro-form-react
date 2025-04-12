@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from "react";
 
-import { get } from "lodash-es";
+import { get, isEqual } from "lodash-es";
 
 import { isEmpty } from "@/utils/tools";
 
@@ -43,7 +43,9 @@ const FormSync: React.FC<FormSyncProps> = props => {
     if (!("fields" in props)) {
       const name = namePathToString(props.source);
       const value = get(data, props.source);
-      if (memorizedValues.current.get(name) !== value) {
+      if (
+        !isEqual(memorizedValues.current.get(name), value)
+      ) {
         for (const targetField of props.target) {
           setQuery.push({ name: targetField, value });
         }
@@ -54,7 +56,9 @@ const FormSync: React.FC<FormSyncProps> = props => {
         const name = namePathToString(field);
         const value = get(data, field);
         let shouldBreak = false;
-        if (memorizedValues.current.get(name) !== value) {
+        if (
+          !isEqual(memorizedValues.current.get(name), value)
+        ) {
           shouldBreak = true;
           for (const field of dedupedFields) {
             const name2 = namePathToString(field);
