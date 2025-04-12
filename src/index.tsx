@@ -61,6 +61,7 @@ const InnerForm = forwardRef<FormActions, FormProps>(({
 
   useImperativeHandle(ref, () => ({
     submit: handleSubmit,
+    setData: context.setData,
     reset: context.resetFields,
     setFieldValue: context.setFieldValue,
     getFieldValue: context.getFieldValue,
@@ -73,7 +74,7 @@ const InnerForm = forwardRef<FormActions, FormProps>(({
     getFieldError: context.getFieldError,
     validateFields: context.validateFields,
     isFieldsTouched: context.isFieldsTouched,
-  }), [context.getFieldError, context.getFieldValue, context.getFields, context.getFieldsFormattedValue, context.getFieldsValue, context.isFieldsTouched, context.resetFields, context.setFieldError, context.setFieldValue, context.setFields, context.validateFields, handleSubmit]);
+  }), [context.getFieldError, context.getFieldValue, context.getFields, context.getFieldsFormattedValue, context.getFieldsValue, context.isFieldsTouched, context.resetFields, context.setData, context.setFieldError, context.setFieldValue, context.setFields, context.validateFields, handleSubmit]);
 
   return children;
 });
@@ -87,6 +88,7 @@ interface FormComponent extends React.ForwardRefExoticComponent<FormProps & Reac
 }
 
 const Form = forwardRef<FormActions, FormProps>((props, ref) => {
+  console.log("[taro-form-react] run in link mode");
   return (
     <FormContextProvider {...props}>
       <InnerForm ref={ref} {...props} />
