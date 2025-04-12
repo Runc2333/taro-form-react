@@ -88,7 +88,6 @@ interface FormComponent extends React.ForwardRefExoticComponent<FormProps & Reac
 }
 
 const Form = forwardRef<FormActions, FormProps>((props, ref) => {
-  console.log("[taro-form-react] run in link mode");
   return (
     <FormContextProvider {...props}>
       <InnerForm ref={ref} {...props} />
