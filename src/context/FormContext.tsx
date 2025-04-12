@@ -269,10 +269,9 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
         const field = getField(namePathToString(fieldData.name));
         if (!field) {
           console.warn(`[taro-form-react] Attempted to set field "${nameString}" that was never registered.\nForm data will still be updated but may not present while submit.\nUse Form.Keep to keep the field in sync with the form data.`);
-          continue;
         }
 
-        if (fieldData.touched !== undefined) {
+        if (field && fieldData.touched !== undefined) {
           setField(nameString, { ...field, touched: fieldData.touched });
         }
 
