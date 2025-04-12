@@ -13,7 +13,7 @@ import type { Field, FormContextProps, FormProviderConfiguration } from "./conte
 import { FormContextProvider, useFormContext } from "./context/FormContext";
 
 export type FormActions =
-  Pick<FormContextProps, "setFieldValue" | "getFieldValue" | "getFieldsValue" | "getFieldsFormattedValue" | "setFields" | "getFields" | "resetFields" | "setFieldError" | "getFieldError" | "validateFields" | "isFieldsTouched">
+  Pick<FormContextProps, "setData" | "setFieldValue" | "getFieldValue" | "getFieldsValue" | "getFieldsFormattedValue" | "setFields" | "getFields" | "resetFields" | "setFieldError" | "getFieldError" | "validateFields" | "isFieldsTouched">
   & {
     submit: () => Promise<Record<string, any> | undefined>;
     reset: () => void;
