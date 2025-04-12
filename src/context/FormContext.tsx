@@ -252,7 +252,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
         if (transformedValue.__form_internals_should_merge) {
           merge(result, transformedValue.value);
         } else {
-          set(result, name, transformedValue);
+          set(result, name, transformedValue.value);
         }
       }
     }
