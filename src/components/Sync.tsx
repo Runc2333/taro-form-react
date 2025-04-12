@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef } from "react";
 
 import { get } from "lodash-es";
 
+import { isEmpty } from "@/utils/tools";
+
 import { useFormContext } from "@/context/FormContext";
 import { namePathToString } from "@/utils";
 
@@ -17,7 +19,7 @@ export type FormSyncProps =
   };
 
 const FormSync: React.FC<FormSyncProps> = props => {
-  const { data, setFieldValue } = useFormContext();
+  const { data, setFields } = useFormContext();
 
   const dedupedFields = useMemo(() => {
     const result = new Map<string, NamePath>();
@@ -37,12 +39,13 @@ const FormSync: React.FC<FormSyncProps> = props => {
   const memorizedValues = useRef<Map<string, any>>(new Map());
 
   useEffect(() => {
+    const setQuery: any[] = [];
     if (!("fields" in props)) {
       const name = namePathToString(props.source);
       const value = get(data, props.source);
       if (memorizedValues.current.get(name) !== value) {
         for (const targetField of props.target) {
-          setFieldValue(targetField, value);
+          setQuery.push({ name: targetField, value });
         }
       }
       memorizedValues.current.set(name, value);
@@ -56,7 +59,7 @@ const FormSync: React.FC<FormSyncProps> = props => {
           for (const field of dedupedFields) {
             const name2 = namePathToString(field);
             if (name2 !== name) {
-              setFieldValue(field, value);
+              setQuery.push({ name: field, value });
               memorizedValues.current.set(name2, value);
             }
           }
@@ -67,7 +70,10 @@ const FormSync: React.FC<FormSyncProps> = props => {
         }
       }
     }
-  }, [props, data, setFieldValue, dedupedFields]);
+    if (!isEmpty(setQuery)) {
+      setFields(setQuery);
+    }
+  }, [props, data, dedupedFields, setFields]);
 
   return null;
 };
