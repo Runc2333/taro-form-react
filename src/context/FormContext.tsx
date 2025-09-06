@@ -116,7 +116,7 @@ export const FormContextProvider: React.FC<FormProviderProps> = ({
   ...props
 }) => {
   const [fields, { set: setField, get: getField, remove: removeField }] = useMap<string, Field>();
-  const [data, setData] = useState<Record<string, any>>({});
+  const [data, setData] = useState<Record<string, any>>(initialValues || {});
 
   const registerField = useCallback<FormContextProps["registerField"]>((name, ref, initialValue) => {
     const nameString = namePathToString(name);
