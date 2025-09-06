@@ -1,0 +1,87 @@
+.tfr-form-item-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tfr-form-item-container-horizontal {
+  align-items: flex-end;
+}
+
+.tfr-form-item-inner {
+  position: relative;
+  display: flex;
+  width: 100%;
+  gap: 16rpx;
+  box-sizing: border-box;
+}
+
+.tfr-form-item-inner-horizontal {
+  flex-direction: row;
+  align-items: start;
+  justify-content: start;
+}
+
+.tfr-form-item-inner-vertical {
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+}
+
+.tfr-form-item-error-text {
+  color: #FF4D4F;
+  font-size: 28rpx;
+  margin-top: 8rpx;
+  box-sizing: border-box;
+}
+
+.tfr-form-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+}
+
+.tfr-form-label-no-asterisk-space {
+  left: -10rpx;
+}
+
+.tfr-form-label-label {
+  font-size: 28rpx;
+  display: inline-block;
+  position: relative;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.tfr-form-label-label::before {
+  content: '*';
+  color: #FF4D4F;
+  margin-right: 4rpx;
+  font-size: 28rpx;
+  font-family: 'SimSun', 'sans-serif';
+}
+
+.tfr-form-label-label.tfr-small.tfr-show-asterisk::before {
+  display: inline-block;
+}
+
+.tfr-form-label-label.tfr-small.tfr-hide-asterisk::before {
+  display: none;
+}
+
+.tfr-form-label-label.tfr-normal.tfr-show-asterisk::before {
+  opacity: 1;
+}
+
+.tfr-form-label-label.tfr-normal.tfr-hide-asterisk::before {
+  opacity: 0;
+}
+
+.tfr-form-label-colon {
+  font-size: 28rpx;
+  position: relative;
+  white-space: nowrap;
+}

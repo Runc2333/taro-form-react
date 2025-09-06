@@ -21,6 +21,8 @@ import From from "taro-form-react";
 // 样式只需要在入口文件引入一次
 // 包含 Label 和一些简单布局样式
 import "taro-form-react/dist/styles/index.scss";
+// 或者使用 css
+import "taro-form-react/dist/styles/index.css";
 
 import { Input, Button } from "@tarojs/components";
 
