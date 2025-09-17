@@ -1,7 +1,7 @@
 {
   "name": "taro-form-react",
   "description": "A form component for Taro 3.x based on React",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "browser": "dist/index.umd.js",
   "module": "dist/index.esm.js",
   "main": "dist/index.js",
