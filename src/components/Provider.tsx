@@ -6,7 +6,9 @@ import { useFormContext } from "@/context/FormContext";
 import { useInnerFormContext } from "@/context/InnerFormContext";
 
 export type FormProviderProps = {
-  children: (context: Omit<ReturnType<typeof useFormContext>, "registerField" | "unregisterField" | "setFieldValue" | "setFields" | "resetFields" | "setFieldError" | "setData">) => React.ReactNode;
+  children: (context:
+    Omit<ReturnType<typeof useFormContext>, "registerField" | "unregisterField" | "setFieldValue" | "setFields" | "resetFields" | "setFieldError" | "setData"> & ReturnType<typeof useInnerFormContext>
+  ) => React.ReactNode;
 };
 
 const FormProvider: React.FC<FormProviderProps> = ({ children }) => {

@@ -4,6 +4,7 @@ import path from "path";
 import copy from "rollup-plugin-copy";
 import { terser } from "rollup-plugin-terser";
 import typescript from "rollup-plugin-typescript2";
+import { replaceTscAliasPaths } from "tsc-alias";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -57,5 +58,14 @@ export default {
       ],
       verbose: true,
     }),
+    {
+      name: "tsc-alias-dts",
+      writeBundle () {
+        replaceTscAliasPaths({
+          project: resolvePath("tsconfig.json"),
+          declarationDir: "dist/types",
+        });
+      },
+    },
   ],
 };
