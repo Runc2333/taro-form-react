@@ -11,6 +11,7 @@ import { filterUndefined } from "@/utils/tools";
 import type { Field, FormContextProps, FormProviderConfiguration } from "./context/FormContext";
 
 import { FormContextProvider, useFormContext } from "./context/FormContext";
+import { InnerFormContext } from "./context/InnerFormContext";
 
 export type FormActions =
   Pick<FormContextProps, "setData" | "setFieldValue" | "getFieldValue" | "getFieldsValue" | "getFieldsFormattedValue" | "setFields" | "getFields" | "resetFields" | "setFieldError" | "getFieldError" | "validateFields" | "isFieldsTouched">
@@ -48,7 +49,10 @@ const InnerForm = forwardRef<FormActions, FormProps>(({
       onFinishFailed?.(errors);
       return;
     }
-    const values = omitNil ? filterUndefined(context.getFieldsValue(), true) : context.getFieldsValue();
+
+    const values = omitNil
+      ? filterUndefined(await context.getFieldsFormattedValue(), true)
+      : await context.getFieldsFormattedValue();
 
     try {
       onFinish?.(values);
@@ -76,7 +80,16 @@ const InnerForm = forwardRef<FormActions, FormProps>(({
     isFieldsTouched: context.isFieldsTouched,
   }), [context.getFieldError, context.getFieldValue, context.getFields, context.getFieldsFormattedValue, context.getFieldsValue, context.isFieldsTouched, context.resetFields, context.setData, context.setFieldError, context.setFieldValue, context.setFields, context.validateFields, handleSubmit]);
 
-  return children;
+  return (
+    <InnerFormContext.Provider
+      value={{
+        submit: handleSubmit,
+        reset: context.resetFields,
+      }}
+    >
+      {children}
+    </InnerFormContext.Provider>
+  );
 });
 
 interface FormComponent extends React.ForwardRefExoticComponent<FormProps & React.RefAttributes<FormActions>> {
